@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Security.Cryptography.X509Certificates;
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
+namespace InstantMessengerServer
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+            Console.WriteLine();
+            Console.WriteLine("Wciśnij Enter by zamknąć program.");
+            Console.ReadLine();
+        }
+        
+        public X509Certificate2 cert = new X509Certificate2("server.pfx", "instant");
+
+        public IPAddress ip = IPAddress.Parse("127.0.0.1");
+        public int port = 800;
+        public bool running = true;
+        public TcpListener server;
+
+        public Dictionary<string, UserInfo> users = new Dictionary<string, UserInfo>(); 
+
+        public Program()
+        {
+            Console.Title = "Komunikator";
+            Console.WriteLine("----- Komunikator -----");
+            LoadUsers();
+            Console.WriteLine("[{0}] Start...", DateTime.Now);
+
+            server = new TcpListener(ip, port);
+            server.Start();
+            Console.WriteLine("[{0}] Serwer jest właśnie uruchamiony...", DateTime.Now);
+            
+            Listen();
+        }
+
+        void Listen()  
+        {
+            while (running)
+            {
+                TcpClient tcpClient = server.AcceptTcpClient();  
+                Client client = new Client(this, tcpClient);     
+            }
+        }
+
+        string usersFileName = Environment.CurrentDirectory + "\\users.dat";
+        public void SaveUsers()  
+        {
+            try
+            {
+                Console.WriteLine("[{0}] Rejestracja użytkownika...", DateTime.Now);
+                BinaryFormatter bf = new BinaryFormatter();
+                FileStream file = new FileStream(usersFileName, FileMode.Create, FileAccess.Write);
+                bf.Serialize(file, users.Values.ToArray());  
+                file.Close();
+                Console.WriteLine("[{0}] Użytkownik zarejestrowany!", DateTime.Now);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        public void LoadUsers()  
+        {
+            try
+            {
+                Console.WriteLine("[{0}] Wczytywanie użytkownika...", DateTime.Now);
+                BinaryFormatter bf = new BinaryFormatter();
+                FileStream file = new FileStream(usersFileName, FileMode.Open, FileAccess.Read);
+                UserInfo[] infos = (UserInfo[])bf.Deserialize(file);     
+                file.Close();
+                users = infos.ToDictionary((u) => u.UserName, (u) => u);  
+                Console.WriteLine("[{0}] Użytkownik wczytany! ({1})", DateTime.Now, users.Count);
+            }
+            catch { }
+        }
+    }
+}

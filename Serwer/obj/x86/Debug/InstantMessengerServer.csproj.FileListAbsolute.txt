@@ -1,0 +1,7 @@
+C:\Users\Joanna\Desktop\InstantMessengerServer\bin\Debug\server.pfx
+C:\Users\Joanna\Desktop\InstantMessengerServer\bin\Debug\InstantMessengerServer.exe
+C:\Users\Joanna\Desktop\InstantMessengerServer\bin\Debug\InstantMessengerServer.pdb
+C:\Users\Joanna\Desktop\InstantMessengerServer\obj\x86\Debug\InstantMessengerServer.csprojResolveAssemblyReference.cache
+C:\Users\Joanna\Desktop\InstantMessengerServer\obj\x86\Debug\InstantMessengerServer.csproj.CoreCompileInputs.cache
+C:\Users\Joanna\Desktop\InstantMessengerServer\obj\x86\Debug\InstantMessengerServer.exe
+C:\Users\Joanna\Desktop\InstantMessengerServer\obj\x86\Debug\InstantMessengerServer.pdb
